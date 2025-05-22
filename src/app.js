@@ -21,6 +21,7 @@ app.use(
       "http:localhost:5173",
       "https://toshen-backend.onrender.com",
       "https://toshel-frontend.vercel.app",
+      "https://toshel.org"
     ],
     optionsSuccessStatus: 200,
   })
