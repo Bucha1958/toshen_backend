@@ -5,6 +5,9 @@ import compression from "compression";
 import cookieParser from "cookie-parser";
 import rootRoutes from "./routes/rootRoutes.js";
 import dbConnection from "../config/dbConnection.js";
+import dotenv from 'dotenv';
+dotenv.config();
+
 
 const PORT = process.env.SERVER_PORT || 3500;
 
@@ -13,19 +16,24 @@ app.use(express.json());
 
 app.use(express.urlencoded({ extended: false }));
 
-app.use(
-  cors({
-    methods: ["*"],
-    origin: [
-      "http://localhost:3000",
-      "http:localhost:5173",
-      "https://toshen-backend.onrender.com",
-      "https://toshel-frontend.vercel.app",
-      "https://toshel.org"
-    ],
-    optionsSuccessStatus: 200,
-  })
-);
+
+const allowedOrigins = [
+  'https://www.toshel.org', 
+  'https://toshel.org', 
+  'http://localhost:3000',
+  'http://localhost:5173'
+];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+}));
 
 app.use(helmet());
 
