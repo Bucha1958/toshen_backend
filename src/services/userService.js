@@ -86,12 +86,28 @@ export const loginService = async (req, res, next) => {
   }
 };
 
+// export const getMyProfileService = async (req, res, next) => {
+//   const authUser = req?.user;
+//   return res.status(200).json({
+//     success: true,
+//     message: "Profile successfully retrieved",
+//     data: authUser,
+//   });
+// };
+
 export const getMyProfileService = async (req, res, next) => {
-  const authUser = req?.user;
+  const user = req.user;
+
   return res.status(200).json({
     success: true,
     message: "Profile successfully retrieved",
-    data: authUser,
+    data: {
+      _id: user._id,
+      email: user.email,
+      is_admin: user.is_admin || false,
+      status: user.status,
+      createdAt: user.createdAt,
+    },
   });
 };
 
