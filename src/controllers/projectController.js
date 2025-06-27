@@ -228,13 +228,22 @@ export const updateProject = async (req, res) => {
     }
 
     // Handle category update
+    // if (updates.category) {
+    //   const category = await Category.findOne({ name: updates.category.toLowerCase() });
+    //   if (!category) {
+    //     return res.status(400).json({ message: 'Invalid category' });
+    //   }
+    //   updates.category = category._id;
+    // }
+
     if (updates.category) {
-      const category = await Category.findOne({ name: updates.category.toLowerCase() });
+      const category = await Category.findById(updates.category);
       if (!category) {
         return res.status(400).json({ message: 'Invalid category' });
       }
       updates.category = category._id;
     }
+
 
     // Handle new images
     if (req.files?.images?.length > 0) {
