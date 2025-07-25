@@ -1,0 +1,60 @@
+---
+- name: Safely update SSL cert and key on webservers
+  hosts: all
+  become: true
+  tasks:
+
+    - name: Ensure certs directory exists
+      file:
+        path: /etc/ssl/certs
+        state: directory
+        mode: '0755'
+
+    - name: Ensure private directory exists
+      file:
+        path: /etc/ssl/private
+        state: directory
+        mode: '0700'
+
+    - name: Check if existing SSL cert exists
+      stat:
+        path: /etc/ssl/certs/test_cert.pem
+      register: cert_stat
+
+    - name: Backup existing certificate if it exists
+      copy:
+        src: /etc/ssl/certs/test_cert.pem
+        dest: /etc/ssl/certs/test_cert.pem.bak
+        remote_src: true
+      when: cert_stat.stat.exists
+
+
+    - name: Upload test certificate
+      copy:
+        src: /tmp/test-cert/test_cert.pem
+        dest: /etc/ssl/certs/test_cert.pem
+        owner: root
+        group: root
+        mode: '0644'
+      register: ssl_cert_result
+
+    - name: Check if existing private key exists
+      stat:
+        path: /etc/ssl/private/test_key.pem
+      register: key_stat
+
+    - name: Backup existing private key if it exists
+      copy:
+        src: /etc/ssl/private/test_key.pem
+        dest: /etc/ssl/private/test_key.pem.bak
+        remote_src: true
+      when: key_stat.stat.exists
+
+    - name: Upload test private key
+      copy:
+        src: /tmp/test-cert/test_key.pem
+        dest: /etc/ssl/private/test_key.pem
+        owner: root
+        group: root
+        mode: '0600'
+      register: ssl_key_result
